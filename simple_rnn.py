@@ -13,7 +13,7 @@ train_num = 60000
 test_num = 10000
 batch_size = 100
 img_dims = (28, 28)
-cell_dims = (128, 3)
+cell_dims = [128, 3]
 learning_rate = 0.001
 epoch = 5
 
@@ -33,7 +33,7 @@ outputs, _ = tf.nn.dynamic_rnn(multiCell, X, dtype=tf.float32)
 outputs = tf.transpose(outputs, [1,0,2])[-1]
 
 # fully connected
-fc_outputs = tf.contrib.layer.fully_connected(
+fc_outputs = tf.contrib.layers.fully_connected(
 	outputs, 10, activation_fn = None)
 
 # train-op, loss
@@ -49,7 +49,7 @@ sess.run(tf.global_variables_initializer())
 total_batch = int(train_num / batch_size)
 for i in range(epoch):
 	total_loss = 0
-	for j in ragne(total_batch):
+	for j in range(total_batch):
 		train_x = mnist['train_img'][0 + (j*batch_size) : ((j+1)*batch_size)]
 		# input data shape from rnn [batch_size, squence_length, data_size]
 		train_x = np.squeeze(train_x, axis = 3)
@@ -57,13 +57,14 @@ for i in range(epoch):
 		_, loss_val = sess.run([train_op, loss], 
 			feed_dict={X:train_x, Y:train_y})
 		total_loss += loss_val
-		print(" batch %i/%i loss %f total_loss %f"%(i,total_batch,loss_val,total_loss))
-	print(" epoch %i | eval_loss %f"%(i+1, total_loss/total_batch))
+		print(" batch %i/%i loss %f total_loss %f"%(j+1,total_batch,loss_val,total_loss), end="\r")
+	print("\n epoch %i | eval_loss %f"%(i+1, total_loss/total_batch))
 
 # test
 test_total_batch = int(test_num/ batch_size)
+accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(fc_outputs,1), tf.argmax(Y,1)),tf.float32))
 sum_acc = 0
-for i in ragne(test_total_batch):
+for i in range(test_total_batch):
 	test_x = mnist['test_img'][0 + (i*batch_size): ((i+1)*batch_size)]
 	test_x = np.squeeze(test_x, axis=3)
 	test_y = mnist['test_label'][0 + (i*batch_size): ((i+1)*batch_size)]

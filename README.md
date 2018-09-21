@@ -1,6 +1,9 @@
 ##overview ##
-mnist classfication
 simple rnn and cnn
+
+##data##
+mnist 
+http://yann.lecun.com/exdb/mnist/
 
 ## reference ##
 모두의 딥러닝

@@ -1,7 +1,7 @@
-##overview ##
+## overview ##
 simple rnn and cnn
 
-##data##
+## data ##
 mnist 
 http://yann.lecun.com/exdb/mnist/
 
